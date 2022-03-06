@@ -29,6 +29,19 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/secure-page')
+@login_required
+def secure_page():
+    return render_template('secure_page.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    flash('You have been logged out.', 'danger')
+    logout_user()
+    return redirect(url_for('home'))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -44,10 +57,10 @@ def login():
             if user is not None and check_password_hash(user.password, password):
                 login_user(user)
                 flash('Logged in successfully.', 'success')
-                return redirect(url_for("secure-page")) 
+                return redirect(url_for("secure_page")) 
             else:
                 flash('Incorrect username or password', 'danger')
-                
+
     return render_template("login.html", form=form)
 
 
